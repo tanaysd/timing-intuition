@@ -4,11 +4,11 @@
 
 ## What is this?
 
-An interactive training tool that helps developers and engineers internalize what different response times actually *feel* like. By watching progress bars fill at different speeds repeatedly, you develop instinctive recognition of latency ranges—from "instant" (9ms) to "patience limit" (5 seconds).
+An interactive training tool that helps developers and engineers internalize what different response times actually *feel* like. By watching progress bars fill at different speeds repeatedly, you develop instinctive recognition of latency ranges—anchored to physical sensations like eye movements and blinks.
 
 ## Why does this matter?
 
-Engineers often make performance decisions based on numbers alone. But understanding *viscerally* that 50ms feels snappy while 200ms feels perceptible helps you:
+Engineers often make performance decisions based on numbers alone. But understanding *viscerally* that 100ms is one blink while 500ms is five blinks helps you:
 - Set better SLOs and performance budgets
 - Make faster architectural decisions during design reviews
 - Debug latency issues with better intuition about "where to look"
@@ -20,20 +20,19 @@ Engineers often make performance decisions based on numbers alone. But understan
 
 ## Timing Thresholds
 
-| Duration | Category | Description |
-|----------|----------|-------------|
-| 9ms | Instant | Single frame render time (60 FPS) |
-| 50ms | Quick | Snappy UI response threshold |
-| 200ms | Perceptible | Noticeable but acceptable delay |
-| 750ms | Noticeable | Typical API call latency |
-| 1000ms | 1 Second | Human reaction time baseline |
-| 5000ms | Patience Limit | Maximum tolerable wait without feedback |
+| Duration | Physical Anchor | Technical Meaning |
+|----------|----------------|-------------------|
+| 10ms | Eye saccade | Animation frame (fastest human motion) |
+| 100ms | 1 blink | Instant feedback threshold |
+| 500ms | 5 blinks | Noticeable delay (needs acknowledgment) |
+| 1000ms | 10 blinks | Flow threshold (maintains thought continuity) |
+| 5000ms | 50 blinks | Patience limit (maximum tolerable wait) |
 
 ## How to Use
 
 1. **Set iterations** (default: 5) — more repetitions = stronger intuition
-2. **Click Start** — watch all six timers fill at their respective speeds
-3. **Observe the differences** — focus on *feeling* the time passing, not just watching
+2. **Click Start** — watch all five timers fill at their respective speeds
+3. **Observe the physical anchors** — count blinks, feel the eye movements
 4. **Repeat regularly** — like any skill, timing intuition requires practice
 
 ## The Science
