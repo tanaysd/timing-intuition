@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timing Intuition Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #4ECDC4 0%, #45B7D1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .iteration-counter {
+            font-size: 1.1rem;
+            color: #888888;
+            margin-top: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            color: #cccccc;
+            font-size: 0.95rem;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 8px 12px;
+            background: #333333;
+            border: 2px solid #444444;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #4ECDC4 0%, #45B7D1 100%);
+            color: #ffffff;
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+            color: #ffffff;
+        }
+
+        .timers {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .timer-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .timer-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .timer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .timer-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .timer-remaining {
+            font-size: 1rem;
+            color: #888888;
+            font-family: 'Monaco', 'Courier New', monospace;
+            min-width: 70px;
+            text-align: right;
+        }
+
+        .timer-remaining.done {
+            color: #4ECDC4;
+            font-weight: 600;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 30px;
+            background: #333333;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.016s linear;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0) 100%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #666666;
+            font-size: 0.9rem;
+        }
+
+        .description {
+            color: #aaaaaa;
+            font-size: 0.9rem;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⏱️ Timing Intuition Builder</h1>
+            <div class="iteration-counter" id="iteration-counter">Iteration 0 / 5</div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="iterations">Iterations:</label>
+                <input type="number" id="iterations" value="5" min="1" max="100">
+            </div>
+            <button class="btn-start" id="start-btn">Start</button>
+            <button class="btn-reset" id="reset-btn">Reset</button>
+        </div>
+
+        <div class="timers" id="timers"></div>
+
+        <div class="footer">
+            Build intuition for common latency thresholds through visual comparison
+        </div>
+    </div>
+
+    <script>
+        const TIME_SLICES = [
+            { duration: 9, color: '#FF6B6B', label: 'Instant', description: 'Frame render time' },
+            { duration: 50, color: '#4ECDC4', label: 'Quick', description: 'Snappy UI response' },
+            { duration: 200, color: '#45B7D1', label: 'Perceptible', description: 'Button click feedback' },
+            { duration: 750, color: '#FFA07A', label: 'Noticeable', description: 'API call' },
+            { duration: 1000, color: '#98D8C8', label: '1 Second', description: 'Human reaction time' },
+            { duration: 5000, color: '#C7CEEA', label: '5 Seconds', description: 'User patience limit' }
+        ];
+
+        let isRunning = false;
+        let currentIteration = 0;
+        let totalIterations = 5;
+        let animationFrameId = null;
+
+        // Create timer elements
+        const timersContainer = document.getElementById('timers');
+        TIME_SLICES.forEach((timer, index) => {
+            const timerItem = document.createElement('div');
+            timerItem.className = 'timer-item';
+            timerItem.innerHTML = `
+                <div class="timer-header">
+                    <div>
+                        <span class="timer-label" style="color: ${timer.color}">${timer.label} (${timer.duration}ms)</span>
+                        <span class="description">— ${timer.description}</span>
+                    </div>
+                    <span class="timer-remaining" id="remaining-${index}">${timer.duration}ms</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-${index}" style="background: linear-gradient(90deg, ${timer.color} 0%, ${adjustBrightness(timer.color, 20)} 100%)"></div>
+                </div>
+            `;
+            timersContainer.appendChild(timerItem);
+        });
+
+        function adjustBrightness(color, percent) {
+            const num = parseInt(color.replace("#", ""), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                (B < 255 ? B < 1 ? 0 : B : 255))
+                .toString(16).slice(1);
+        }
+
+        function updateIterationCounter() {
+            document.getElementById('iteration-counter').textContent =
+                `Iteration ${currentIteration} / ${totalIterations}`;
+        }
+
+        function resetTimers() {
+            TIME_SLICES.forEach((timer, index) => {
+                const progressBar = document.getElementById(`progress-${index}`);
+                const remainingLabel = document.getElementById(`remaining-${index}`);
+                progressBar.style.width = '0%';
+                remainingLabel.textContent = `${timer.duration}ms`;
+                remainingLabel.classList.remove('done');
+            });
+        }
+
+        async function runSingleIteration() {
+            resetTimers();
+
+            const startTime = performance.now();
+            const maxDuration = Math.max(...TIME_SLICES.map(t => t.duration));
+
+            return new Promise((resolve) => {
+                function updateProgress() {
+                    const elapsed = performance.now() - startTime;
+
+                    if (elapsed >= maxDuration) {
+                        // Complete all timers
+                        TIME_SLICES.forEach((timer, index) => {
+                            const progressBar = document.getElementById(`progress-${index}`);
+                            const remainingLabel = document.getElementById(`remaining-${index}`);
+                            progressBar.style.width = '100%';
+                            remainingLabel.textContent = 'Done!';
+                            remainingLabel.classList.add('done');
+                        });
+                        resolve();
+                        return;
+                    }
+
+                    // Update each timer
+                    TIME_SLICES.forEach((timer, index) => {
+                        const progressBar = document.getElementById(`progress-${index}`);
+                        const remainingLabel = document.getElementById(`remaining-${index}`);
+
+                        if (elapsed >= timer.duration) {
+                            progressBar.style.width = '100%';
+                            remainingLabel.textContent = 'Done!';
+                            remainingLabel.classList.add('done');
+                        } else {
+                            const percent = (elapsed / timer.duration) * 100;
+                            const remaining = Math.ceil(timer.duration - elapsed);
+                            progressBar.style.width = `${percent}%`;
+                            remainingLabel.textContent = `${remaining}ms`;
+                        }
+                    });
+
+                    animationFrameId = requestAnimationFrame(updateProgress);
+                }
+
+                updateProgress();
+            });
+        }
+
+        async function runIterations() {
+            isRunning = true;
+            document.getElementById('start-btn').disabled = true;
+            totalIterations = parseInt(document.getElementById('iterations').value);
+
+            for (let i = 0; i < totalIterations; i++) {
+                if (!isRunning) break;
+
+                currentIteration = i + 1;
+                updateIterationCounter();
+
+                await runSingleIteration();
+
+                // Brief pause between iterations (except last one)
+                if (i < totalIterations - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            }
+
+            isRunning = false;
+            document.getElementById('start-btn').disabled = false;
+        }
+
+        function reset() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            isRunning = false;
+            currentIteration = 0;
+            updateIterationCounter();
+            resetTimers();
+            document.getElementById('start-btn').disabled = false;
+        }
+
+        // Event listeners
+        document.getElementById('start-btn').addEventListener('click', runIterations);
+        document.getElementById('reset-btn').addEventListener('click', reset);
+
+        // Initialize
+        updateIterationCounter();
+    </script>
+</body>
+</html>
