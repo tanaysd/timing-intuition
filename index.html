@@ -233,12 +233,11 @@
 
     <script>
         const TIME_SLICES = [
-            { duration: 9, color: '#FF6B6B', label: 'Instant', description: 'Frame render time' },
-            { duration: 50, color: '#4ECDC4', label: 'Quick', description: 'Snappy UI response' },
-            { duration: 200, color: '#45B7D1', label: 'Perceptible', description: 'Button click feedback' },
-            { duration: 750, color: '#FFA07A', label: 'Noticeable', description: 'API call' },
-            { duration: 1000, color: '#98D8C8', label: '1 Second', description: 'Human reaction time' },
-            { duration: 5000, color: '#C7CEEA', label: '5 Seconds', description: 'User patience limit' }
+            { duration: 10, color: '#FF6B6B', label: '10ms — Eye saccade', description: 'Animation frame' },
+            { duration: 100, color: '#4ECDC4', label: '100ms — 1 blink', description: 'Instant feedback' },
+            { duration: 500, color: '#45B7D1', label: '500ms — 5 blinks', description: 'Noticeable delay' },
+            { duration: 1000, color: '#FFA07A', label: '1s — 10 blinks', description: 'Flow threshold' },
+            { duration: 5000, color: '#98D8C8', label: '5s — 50 blinks', description: 'Patience limit' }
         ];
 
         let isRunning = false;
